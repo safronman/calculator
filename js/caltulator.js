@@ -5,9 +5,11 @@ class Calculator {
     this.resultButton = null;
     this.clearButton = null;
     this.changeSignButton = null;
-    this.input = null;
+    this.input = 0;
     this.operation = '';
     this.firstNumber = 0;
+    this.secondNumber = 0;
+    this.result = 0;
   }
 
   init (elId) {
@@ -27,7 +29,7 @@ class Calculator {
       item.addEventListener('click', this.operationButtonClickListener.bind(this));
     });
     this.resultButton.addEventListener('click', this.resultButtonClickListener.bind(this));
-    this.clearButton.addEventListener('click', this.clearInputValue.bind(this));
+    this.clearButton.addEventListener('click', this.clearValues.bind(this));
     this.changeSignButton.addEventListener('click', this.changeNumberSign.bind(this));
   }
 
@@ -41,59 +43,63 @@ class Calculator {
     }
   }
 
-  numberButtonClickListener (event) {
-    var buttonNumber = event.currentTarget.innerHTML;
-    if (this.input.value === '0') {
-      this.input.value = buttonNumber;
-    } else {
-      this.input.value = this.input.value + buttonNumber;
-    }
-  }
-
   operationButtonClickListener (event) {
-    this.operation = event.currentTarget.innerHTML;
-    this.firstNumber = this.input.value;
+    // последовательное выполнение нескольких арифметических операций
+    if (this.operation === '') {
+      this.operation = event.currentTarget.innerHTML;
+      this.firstNumber = this.input.value;
+      this.input.placeholder = this.firstNumber;
+    } else {
+      this.resultButtonClickListener();
+      this.firstNumber = this.result;
+      this.operation = event.currentTarget.innerHTML;
+      this.input.placeholder = this.result;
+    }
+
     this.input.value = '';
   }
 
-  resultButtonClickListener (event) {
-    var secondNumber = this.input.value;
-    var result = 0;
+  resultButtonClickListener () {
+    this.secondNumber = this.input.value;
 
     switch (this.operation) {
       case '+':
-        result = sum(this.firstNumber, secondNumber);
+      this.result = sum(this.firstNumber, this.secondNumber);
         break;
 
       case '-':
-        result = minus(this.firstNumber, secondNumber);
+      this.result = minus(this.firstNumber, this.secondNumber);
         break;
 
       case '*':
-        result = multiply(this.firstNumber, secondNumber);
+      this.result = multiply(this.firstNumber, this.secondNumber);
         break;
 
       case '/':
-        if (secondNumber === '0') {
+        if (this.secondNumber === '0') {
           window.alert('Деление на 0 невозможно');
         } else {
-          result = divide(this.firstNumber, secondNumber);
+          this.result = divide(this.firstNumber, this.secondNumber);
         }
         break;
 
       default:
-        result = "Неизвестная операция";
+      this.result = "Неизвестная операция";
         break;
     }
 
-    this.input.value = result;
+    this.input.value = this.result;
   }
 
-  clearInputValue (event) {
+  clearValues () {
+    this.firstNumber = 0;
+    this.secondNumber = 0;
+    this.result = 0;
     this.input.value = '0';
+    this.operation = '';
   }
 
-  changeNumberSign (event) {
+  changeNumberSign () {
     var sign = Math.sign(this.input.value);
     if (sign === 1) {
       this.input.value = '-' + this.input.value;
@@ -101,4 +107,4 @@ class Calculator {
       this.input.value = Math.abs(this.input.value);
     }
   }
-};
+}
