@@ -34,7 +34,7 @@ class Calculator {
   }
 
   numberButtonClickListener (event) {
-    var buttonNumber = event.currentTarget.innerHTML;
+    var buttonNumber = parseInt(event.currentTarget.innerHTML);
   
     if (this.input.value === '0') {
       this.input.value = buttonNumber;
@@ -47,7 +47,7 @@ class Calculator {
     // последовательное выполнение нескольких арифметических операций
     if (this.operation === '') {
       this.operation = event.currentTarget.innerHTML;
-      this.firstNumber = this.input.value;
+      this.firstNumber = parseInt(this.input.value);
       this.input.placeholder = this.firstNumber;
     } else {
       this.resultButtonClickListener();
@@ -60,7 +60,7 @@ class Calculator {
   }
 
   resultButtonClickListener () {
-    this.secondNumber = this.input.value;
+    this.secondNumber = parseInt(this.input.value);
 
     switch (this.operation) {
       case '+':
@@ -89,6 +89,7 @@ class Calculator {
     }
 
     this.input.value = this.result;
+    this.operation = '';
   }
 
   clearValues () {
